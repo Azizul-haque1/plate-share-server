@@ -39,13 +39,23 @@ async function run() {
       res.send(result);
     });
 
+    // add food api
+
+    app.post("/foods", async (req, res) => {
+      const newFood = req.body;
+      console.log(newFood);
+      const result = await foodsCollection.insertOne(newFood);
+      res.send(result);
+    });
+
     app.get("/featured-foods", async (req, res) => {
       const query = { food_quantity: { $gt: 2 } };
       const result = await foodsCollection
         .find(query)
         .sort({
           food_quantity: -1,
-        }).limit(6)
+        })
+        .limit(6)
         .toArray();
       res.send(result);
     });
