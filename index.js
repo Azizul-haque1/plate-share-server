@@ -40,11 +40,29 @@ async function run() {
     });
 
     // add food api
-
     app.post("/foods", async (req, res) => {
       const newFood = req.body;
       console.log(newFood);
       const result = await foodsCollection.insertOne(newFood);
+      res.send(result);
+    });
+
+    // update foods api
+
+    app.patch("/foods/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const update = {
+        $set: req.body,
+      };
+      const result = await foodsCollection.updateOne(query, update);
+      res.send(result);
+    });
+
+    app.delete("/foods/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await foodsCollection.deleteOne(query);
       res.send(result);
     });
 
