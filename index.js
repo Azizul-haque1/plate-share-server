@@ -49,15 +49,26 @@ async function run() {
     });
 
     app.get("/featured-foods", async (req, res) => {
-      const query = { food_quantity: { $gt: 2 } };
       const result = await foodsCollection
-        .find(query)
+        .find()
         .sort({
           food_quantity: -1,
         })
         .limit(6)
         .toArray();
       res.send(result);
+    });
+
+    // my donate food api
+    app.get("/my-food", async (req, res) => {
+      const email = req.query.email;
+      const query = {};
+      if (email) {
+        query.donator_email = email;
+      }
+      const result = await foodsCollection.find(query).toArray();
+      res.send(result);
+      console.log(email);
     });
 
     // Send a ping to confirm a successful connection
