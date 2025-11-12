@@ -97,13 +97,28 @@ async function run() {
     });
 
     app.get("/food-request", async (req, res) => {
-      const email = req.query.email;
-      const query = {};
-      if (email) {
-        query.userEmail = email;
+      const result = await requestFoodCollection.find().toArray();
+      res.send(result);
+    });
 
-      }
+    app.get("/food-request/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { foodId: id };
+      // if (email) {
+      //   query.userEmail = email;
+      // }
       const result = await requestFoodCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    app.patch("/food-request/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const update = {
+        $set: { status: req.body.status },
+      };
+
+      const result = await requestFoodCollection.updateOne(query, update);
       res.send(result);
     });
 
