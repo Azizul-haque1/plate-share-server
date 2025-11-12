@@ -26,6 +26,7 @@ async function run() {
     await client.connect();
     const db = client.db("food-db");
     const foodsCollection = db.collection("foods");
+    const requestFoodCollection = db.collection("request-foods");
 
     app.get("/foods", async (req, res) => {
       const result = await foodsCollection.find().toArray();
@@ -42,13 +43,12 @@ async function run() {
     // add food api
     app.post("/foods", async (req, res) => {
       const newFood = req.body;
-      console.log(newFood);
+      // console.log(newFood);
       const result = await foodsCollection.insertOne(newFood);
       res.send(result);
     });
 
     // update foods api
-
     app.patch("/foods/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -86,7 +86,25 @@ async function run() {
       }
       const result = await foodsCollection.find(query).toArray();
       res.send(result);
-      console.log(email);
+    });
+
+    // food request api
+
+    app.post("/food-request", async (req, res) => {
+      const newRequestFood = req.body;
+      const result = await requestFoodCollection.insertOne(newRequestFood);
+      res.send(result);
+    });
+
+    app.get("/food-request", async (req, res) => {
+      const email = req.query.email;
+      const query = {};
+      if (email) {
+        query.userEmail = email;
+
+      }
+      const result = await requestFoodCollection.find(query).toArray();
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
