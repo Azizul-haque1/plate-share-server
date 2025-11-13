@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     const db = client.db("food-db");
     const foodsCollection = db.collection("foods");
     const requestFoodCollection = db.collection("request-foods");
@@ -67,8 +67,9 @@ async function run() {
     });
 
     app.get("/featured-foods", async (req, res) => {
+      const query = { food_status: "Available" };
       const result = await foodsCollection
-        .find()
+        .find(query)
         .sort({
           food_quantity: -1,
         })
