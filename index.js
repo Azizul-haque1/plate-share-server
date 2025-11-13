@@ -109,8 +109,15 @@ async function run() {
       res.send(result);
     });
 
+    // user requested data api
+
     app.get("/food-request", async (req, res) => {
-      const result = await requestFoodCollection.find().toArray();
+      const email = req.query.email;
+      const query = {};
+      if (email) {
+        query.userEmail = email;
+      }
+      const result = await requestFoodCollection.find(query).toArray();
       res.send(result);
     });
 
