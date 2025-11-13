@@ -29,7 +29,19 @@ async function run() {
     const requestFoodCollection = db.collection("request-foods");
 
     app.get("/foods", async (req, res) => {
-      const result = await foodsCollection.find().toArray();
+      const query = { food_status: "Available" };
+      const result = await foodsCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // donated api
+    app.patch("/foods/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const update = {
+        $set: { food_status: req.body.food_status },
+      };
+      const result = await foodsCollection.updateOne(query, update);
       res.send(result);
     });
 
@@ -112,13 +124,13 @@ async function run() {
       res.send(result);
     });
 
+    // update request food api
     app.patch("/food-request/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const update = {
         $set: { status: req.body.status },
       };
-
       const result = await requestFoodCollection.updateOne(query, update);
       res.send(result);
     });
